@@ -1,0 +1,568 @@
+/* public/css/style.css */
+
+/* -------------------------------------------------------------------------- */
+/* 1. ROOT VARIABLES & THEME CONFIGURATION                                    */
+/* -------------------------------------------------------------------------- */
+:root {
+    /* Brand Colors - Modern Corporate Indigo */
+    --primary: #4f46e5;
+    /* Indigo 600 */
+    --primary-hover: #4338ca;
+    /* Indigo 700 */
+
+    /* Functional Colors */
+    --secondary: #64748b;
+    /* Slate 500 */
+    --success: #10b981;
+    /* Emerald 500 */
+    --success-bg: #d1fae5;
+    --danger: #ef4444;
+    /* Red 500 */
+    --danger-bg: #fee2e2;
+    --warning: #f59e0b;
+    /* Amber 500 */
+
+    /* Backgrounds */
+    --bg-body: #f3f4f6;
+    /* Gray 100 */
+    --bg-card: #ffffff;
+    --bg-sidebar: #0f172a;
+    /* Slate 900 */
+
+    /* Typography Colors */
+    --text-main: #1f2937;
+    /* Gray 800 */
+    --text-muted: #6b7280;
+    /* Gray 500 */
+    --text-light: #f3f4f6;
+    /* Gray 100 */
+
+    /* Borders & Spacing */
+    --border: #e2e8f0;
+    /* Slate 200 */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+    /* Modern Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. GLOBAL RESET & TYPOGRAPHY                                               */
+/* -------------------------------------------------------------------------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    outline: none;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. SIDEBAR NAVIGATION                                                      */
+/* -------------------------------------------------------------------------- */
+.sidebar {
+    width: 280px;
+    background: var(--bg-sidebar);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    padding: 1.5rem;
+    z-index: 100;
+    transition: width 0.3s ease;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
+    padding-left: 0.5rem;
+}
+
+.logo-icon {
+    background: var(--primary);
+    color: white;
+    font-weight: 800;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+}
+
+.brand span {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.nav-label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    margin: 1.5rem 0 0.5rem 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.nav-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    color: #cbd5e1;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transform: translateX(4px);
+}
+
+.nav-link.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+.user-profile {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: white;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.btn-logout {
+    background: none;
+    border: none;
+    color: #f87171;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.btn-logout:hover {
+    color: #ef4444;
+    text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. MAIN CONTENT AREA                                                       */
+/* -------------------------------------------------------------------------- */
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 2.5rem;
+    max-width: 1600px;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. CARDS & CONTAINERS                                                      */
+/* -------------------------------------------------------------------------- */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. FORMS & BUTTONS                                                         */
+/* -------------------------------------------------------------------------- */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background: #f9fafb;
+    margin-bottom: 1.25rem;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+    background: #fff1f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.btn-danger:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. DATA TABLES                                                             */
+/* -------------------------------------------------------------------------- */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+}
+
+.table th:first-child {
+    border-top-left-radius: var(--radius-sm);
+    border-left: 1px solid var(--border);
+}
+
+.table th:last-child {
+    border-top-right-radius: var(--radius-sm);
+    border-right: 1px solid var(--border);
+}
+
+.table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: #f8fafc;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. ALERTS & BADGES                                                         */
+/* -------------------------------------------------------------------------- */
+.alert {
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.alert-success {
+    background: var(--success-bg);
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background: var(--danger-bg);
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. POS SYSTEM (APP-LIKE LAYOUT)                                            */
+/* -------------------------------------------------------------------------- */
+.pos-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    /* Product Area | Cart Sidebar */
+    gap: 1.5rem;
+    height: calc(100vh - 140px);
+    /* Fill remaining screen height */
+}
+
+/* Left Side: Product Grid */
+.pos-products {
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.pos-products::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pos-products::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.product-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+}
+
+/* Right Side: Sticky Cart */
+.pos-cart {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.cart-summary {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.pos-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. DASHBOARD WIDGETS                                                      */
+/* -------------------------------------------------------------------------- */
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 0.5rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 11. MODERN LOGIN PAGE (Glassmorphism)                                      */
+/* -------------------------------------------------------------------------- */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4f46e5 0%, #0f172a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    top: -100px;
+    left: -100px;
+    z-index: 1;
+    filter: blur(80px);
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 3rem;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 12. ANIMATIONS                                                             */
+/* -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
