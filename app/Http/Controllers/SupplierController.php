@@ -9,48 +9,51 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $suppliers = Supplier::orderBy('created_at', 'desc')->get();
+        $suppliers = Supplier::latest()->get();
         return view('suppliers.index', compact('suppliers'));
+    }
+
+    public function create()
+    {
+        return view('suppliers.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'contact_person' => 'nullable|string|max:255',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
             'address' => 'nullable|string'
         ]);
 
         Supplier::create($request->all());
-        return back()->with('success', 'New supplier registered successfully');
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier profile created successfully.');
     }
 
-    // --- NEW: Edit Form ---
     public function edit(Supplier $supplier)
     {
         return view('suppliers.edit', compact('supplier'));
     }
 
-    // --- NEW: Update Logic ---
     public function update(Request $request, Supplier $supplier)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
+            'email' => 'nullable|email',
         ]);
 
         $supplier->update($request->all());
-        return redirect()->route('suppliers.index')->with('success', 'Supplier details updated');
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier details updated.');
     }
 
-    // --- NEW: Delete Logic ---
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();
-        return back()->with('success', 'Supplier removed from database');
-    }
-
-    public function create()
-    {
-        return view('suppliers.create');
+        return back()->with('success', 'Supplier record deleted.');
     }
 }

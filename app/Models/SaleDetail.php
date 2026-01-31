@@ -2,10 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SaleDetail extends Model
 {
-    protected $guarded = [];
-    public $timestamps = false; // Usually details don't need separate timestamps
+    use HasFactory;
+
+    protected $fillable = [
+        'sale_id',
+        'product_id',
+        'qty',
+        'price',
+        'subtotal'
+    ];
+
+    // --- THIS WAS MISSING ---
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class);
+    }
 }

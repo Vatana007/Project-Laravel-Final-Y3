@@ -1,44 +1,158 @@
 @extends('layout.app')
 
+@section('title', 'Add Supplier')
+
 @section('content')
-    <div class="header animate-fade">
-        <div>
-            <h1 class="page-title">Register Supplier</h1>
-            <p style="color: var(--text-muted);">Add a new vendor to your supply chain.</p>
+
+    <div class="animate-fade" style="max-width: 750px; margin: 3rem auto;">
+
+        <div style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0;">New Supplier</h1>
+            <a href="{{ route('suppliers.index') }}" class="btn-cancel">Cancel</a>
         </div>
-        <a href="{{ route('suppliers.index') }}" class="btn"
-            style="background: white; border: 1px solid var(--border);">Cancel</a>
+
+        <div class="card-form">
+            <form action="{{ route('suppliers.store') }}" method="POST">
+                @csrf
+
+                <div class="form-section">
+                    <h3 class="section-label">Company Profile</h3>
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" name="name" class="modern-input" placeholder="e.g. Global Tech Supplies"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>HQ Address</label>
+                        <input type="text" name="address" class="modern-input" placeholder="City, State, Zip Code">
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-section">
+                    <h3 class="section-label">Contact Details</h3>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Contact Person</label>
+                            <input type="text" name="contact_person" class="modern-input" placeholder="e.g. Jane Smith">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" name="phone" class="modern-input" placeholder="+1 555 123 4567">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="modern-input" placeholder="contact@company.com">
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn-save">Save Supplier Profile</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="card animate-fade" style="max-width: 700px; margin: 0 auto;">
-        <form action="{{ route('suppliers.store') }}" method="POST">
-            @csrf
+    <style>
+        .card-form {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
 
-            <div class="form-grid-2">
-                <div style="grid-column: span 2;">
-                    <label>Company Name</label>
-                    <input type="text" name="name" class="form-control" placeholder="e.g. Coca-Cola Beverages" required>
-                </div>
+        .form-section {
+            padding: 2rem;
+        }
 
-                <div>
-                    <label>Contact Phone</label>
-                    <input type="text" name="phone" class="form-control" placeholder="Office line">
-                </div>
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.05em;
+        }
 
-                <div>
-                    <label>Contact Email (Optional)</label>
-                    <input type="email" name="email" class="form-control" placeholder="sales@company.com">
-                </div>
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
 
-                <div style="grid-column: span 2;">
-                    <label>Warehouse / Office Address</label>
-                    <textarea name="address" class="form-control" rows="3" placeholder="Full address details..."></textarea>
-                </div>
-            </div>
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
 
-            <div style="text-align: right; margin-top: 1.5rem;">
-                <button class="btn btn-primary" style="padding: 0.8rem 2rem;">Save Supplier</button>
-            </div>
-        </form>
-    </div>
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .modern-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .divider {
+            height: 1px;
+            background: #f1f5f9;
+            width: 100%;
+        }
+
+        .form-footer {
+            background: #f8fafc;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: right;
+        }
+
+        .btn-save {
+            background: var(--text-main);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-save:hover {
+            background: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            transition: 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+    </style>
+
 @endsection

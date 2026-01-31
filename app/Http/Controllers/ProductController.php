@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->latest()->get();
         return view('products.index', compact('products'));
     }
 
@@ -23,18 +23,20 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'barcode' => 'required|unique:products',
-            'sale_price' => 'required|numeric',
-            'category_id' => 'required'
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'barcode' => 'nullable|string|unique:products,barcode',
+            // FIX: Validate 'cost_price' instead of 'buying_price'
+            'cost_price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0',
+            'qty' => 'required|integer|min:0',
         ]);
 
         Product::create($request->all());
 
-        return redirect()->route('products.index')->with('success', 'Product created!');
+        return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
 
-    // Add these inside ProductController class
     public function edit(Product $product)
     {
         $categories = Category::all();
@@ -44,18 +46,22 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required',
-            'sale_price' => 'required|numeric',
-            'category_id' => 'required'
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'barcode' => 'nullable|string|unique:products,barcode,' . $product->id,
+            'cost_price' => 'required|numeric|min:0',
+            'sale_price' => 'required|numeric|min:0',
+            'qty' => 'required|integer|min:0',
         ]);
 
         $product->update($request->all());
-        return redirect()->route('products.index')->with('success', 'Product updated successfully');
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return back()->with('success', 'Product deleted');
+        return back()->with('success', 'Product deleted successfully!');
     }
 }

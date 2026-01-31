@@ -5,40 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\Customer;
+use App\Models\Category; // <--- ADDED THIS
+use App\Models\StockTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class PosController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
-        // Get cart from session, or empty array if null
-        $cart = session()->get('cart', []);
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['qty'];
-        }
+        // 1. Fix "Undefined variable $categories" error
+        $categories = Category::all();
 
-        return view('pos.index', compact('products', 'cart', 'total'));
+        $products = Product::all();
+        $customers = Customer::all();
+
+        // Get cart, but default to empty array if broken
+        $cart = session()->get('cart', []);
+        if (!is_array($cart))
+            $cart = [];
+
+        return view('pos.index', compact('products', 'customers', 'cart', 'categories'));
     }
 
-    public function addToCart(Request $request)
+    public function addToCart($id)
     {
-        $product = Product::findOrFail($request->product_id);
+        $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
 
-        // If product is already in cart, increment quantity
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]['qty']++;
+        if (isset($cart[$id])) {
+            $cart[$id]['qty']++;
         } else {
-            // Add new product to cart
-            $cart[$product->id] = [
+            $cart[$id] = [
                 "name" => $product->name,
                 "qty" => 1,
                 "price" => $product->sale_price,
-                "product_id" => $product->id
+                "image" => $product->image
             ];
         }
 
@@ -46,45 +49,94 @@ class PosController extends Controller
         return redirect()->back();
     }
 
-    public function checkout()
+    public function updateCart(Request $request)
+    {
+        if ($request->id && $request->qty) {
+            $cart = session()->get('cart');
+            if (isset($cart[$request->id])) {
+                $cart[$request->id]["qty"] = $request->qty;
+                session()->put('cart', $cart);
+            }
+        }
+    }
+
+    public function removeLink(Request $request)
+    {
+        if ($request->id) {
+            $cart = session()->get('cart');
+            if (isset($cart[$request->id])) {
+                unset($cart[$request->id]);
+                session()->put('cart', $cart);
+            }
+        }
+    }
+
+    // CHECKOUT LOGIC (Fixed for "qty" error and "payment_type" error)
+    public function checkout(Request $request)
     {
         $cart = session()->get('cart');
 
-        if (!$cart) {
+        // Safety: Is cart empty?
+        if (!$cart || !is_array($cart) || count($cart) == 0) {
             return redirect()->back()->with('error', 'Cart is empty!');
         }
 
-        DB::transaction(function () use ($cart) {
-            $total = 0;
-            foreach ($cart as $item) {
-                $total += $item['price'] * $item['qty'];
-            }
+        try {
+            DB::transaction(function () use ($request, $cart) {
 
-            // Create Sale Record
-            $sale = Sale::create([
-                'user_id' => Auth::id(),
-                'invoice_number' => 'INV-' . time(),
-                'total_amount' => $total,
-                'final_total' => $total,
-                'payment_type' => 'Cash', // Default for now
-            ]);
+                // 1. Calculate Total Safely (Fixes "Undefined array key qty")
+                $total = 0;
+                foreach ($cart as $id => $details) {
+                    // Skip bad items that don't have price or qty
+                    if (!isset($details['price']) || !isset($details['qty'])) {
+                        continue;
+                    }
+                    $total += $details['price'] * $details['qty'];
+                }
 
-            // Create Sale Details & Update Stock
-            foreach ($cart as $id => $details) {
-                SaleDetail::create([
-                    'sale_id' => $sale->id,
-                    'product_id' => $id,
-                    'qty' => $details['qty'],
-                    'price' => $details['price'],
-                    'subtotal' => $details['price'] * $details['qty']
+                $invoice_number = 'INV-' . date('Ymd') . '-' . rand(1000, 9999);
+
+                // 2. Create Sale (Fixes "Unknown column payment_type")
+                $sale = Sale::create([
+                    'user_id' => auth()->id() ?? 1,
+                    'customer_id' => $request->customer_id,
+                    'invoice_number' => $invoice_number,
+                    'total_amount' => $total,
+                    'discount' => $request->discount ?? 0,
+                    'tax' => $request->tax ?? 0,
+                    'final_total' => $total - ($request->discount ?? 0),
+                    'payment_method' => $request->payment_method ?? 'cash', // Uses correct column name
                 ]);
 
-                // Decrease Stock
-                Product::where('id', $id)->decrement('qty', $details['qty']);
-            }
-        });
+                // 3. Create Details
+                foreach ($cart as $id => $details) {
+                    // Skip bad items again
+                    if (!isset($details['price']) || !isset($details['qty']))
+                        continue;
 
-        session()->forget('cart');
-        return redirect()->back()->with('success', 'Sale completed successfully!');
+                    SaleDetail::create([
+                        'sale_id' => $sale->id,
+                        'product_id' => $id,
+                        'qty' => $details['qty'],
+                        'price' => $details['price'],
+                        'subtotal' => $details['price'] * $details['qty']
+                    ]);
+
+                    // Deduct Stock
+                    $product = Product::find($id);
+                    if ($product) {
+                        $product->decrement('qty', $details['qty']);
+                    }
+                }
+            });
+
+            // Clear cart only on success
+            session()->forget('cart');
+            return redirect()->route('pos.index')->with('success', 'Sale completed successfully!');
+
+        } catch (\Exception $e) {
+            // Shows the specific error on screen if it fails again
+            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+        }
     }
 }

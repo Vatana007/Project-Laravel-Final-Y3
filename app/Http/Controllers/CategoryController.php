@@ -8,21 +8,34 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        // Optimized to count products automatically
+        $categories = Category::withCount('products')->get();
         return view('categories.index', compact('categories'));
     }
+
+    // --- FIX: Add this missing function ---
+    public function create()
+    {
+        return view('categories.create');
+    }
+    // --------------------------------------
 
     public function store(Request $request)
     {
         $request->validate(['name' => 'required|unique:categories']);
         Category::create($request->all());
-        return back()->with('success', 'Category added!');
+        return redirect()->route('categories.index')->with('success', 'Category added!');
     }
 
     public function destroy(Category $category)
     {
+        // Fix: Use withTrashed() to find ALL products (even deleted ones)
+        // and unlink them from this category.
+        $category->products()->withTrashed()->update(['category_id' => null]);
+
         $category->delete();
-        return back()->with('success', 'Category deleted!');
+
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
 
     public function edit(Category $category)

@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        // --- ADD THESE LINES TO MAKE IT WORK ---
+        'role',          // admin or staff
+        'phone',         // Contact number
+        'position_id',   // Link to Work Position
+        'status',        // active or inactive
     ];
 
     /**
@@ -32,6 +37,12 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    // This relationship allows you to get the Title Name (e.g. $user->position->name)
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
 
     /**
      * Get the attributes that should be cast.

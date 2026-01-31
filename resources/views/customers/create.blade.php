@@ -1,41 +1,123 @@
 @extends('layout.app')
 
+@section('title', 'Register Member')
+
 @section('content')
-    <div class="header animate-fade">
-        <div>
-            <h1 class="page-title">New Member</h1>
-            <p style="color: var(--text-muted);">Create a customer profile for loyalty tracking.</p>
-        </div>
-        <a href="{{ route('customers.index') }}" class="btn"
-            style="background: white; border: 1px solid var(--border);">Cancel</a>
-    </div>
 
-    <div class="card animate-fade" style="max-width: 600px; margin: 0 auto;">
-        <form action="{{ route('customers.store') }}" method="POST">
-            @csrf
+    <div class="animate-fade" style="max-width: 600px; margin: 3rem auto;">
 
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div
-                    style="width: 80px; height: 80px; background: #e0e7ff; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
-                    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                        </path>
-                    </svg>
-                </div>
-                <h3 style="font-size: 1.2rem; font-weight: 700;">Customer Profile</h3>
+        <div style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0;">New Member</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Register a new customer.</p>
             </div>
+            <a href="{{ route('customers.index') }}" class="btn-close">Cancel</a>
+        </div>
 
-            <label>Customer Name</label>
-            <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
+        <div class="card-form">
+            <form action="{{ route('customers.store') }}" method="POST">
+                @csrf
 
-            <label>Phone Number</label>
-            <input type="text" name="phone" class="form-control" placeholder="Mobile number for points">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" class="modern-input" placeholder="e.g. Sarah Connor" required>
+                </div>
 
-            <button class="btn btn-primary"
-                style="width: 100%; margin-top: 1.5rem; justify-content: center; padding: 0.8rem;">
-                Create Member Account
-            </button>
-        </form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" class="modern-input" placeholder="+1 234 567" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="modern-input" placeholder="Optional">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Address / Location</label>
+                    <input type="text" name="address" class="modern-input" placeholder="City, State">
+                </div>
+
+                <button type="submit" class="btn-submit">Save Member</button>
+            </form>
+        </div>
     </div>
+
+    <style>
+        .card-form {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .modern-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-close {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-decoration: none;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+    </style>
+
 @endsection

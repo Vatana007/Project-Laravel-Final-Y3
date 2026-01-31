@@ -34,14 +34,17 @@ Route::middleware('auth')->group(function () {
 
     // --- POS System (Point of Sale) ---
     Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
-    Route::post('/pos/add', [PosController::class, 'addToCart'])->name('pos.store');
+    Route::post('/pos/add/{id}', [PosController::class, 'addToCart'])->name('pos.store');
     Route::post('/pos/checkout', [PosController::class, 'checkout'])->name('pos.checkout');
+    Route::get('/pos/update/{id}/{action}', [PosController::class, 'updateCart'])->name('pos.update');
 
     // --- Powerful Inventory & Stock History ---
     Route::get('/stock', [StockTransactionController::class, 'index'])->name('stock.index');         // View History Log
     Route::get('/stock/create', [StockTransactionController::class, 'create'])->name('stock.create'); // Adjustment Form
     Route::post('/stock', [StockTransactionController::class, 'store'])->name('stock.store');         // Save Adjustment
-    Route::delete('/stock/{id}', [StockTransactionController::class, 'destroy'])->name('stock.destroy'); // Delete Log Entry
+    Route::get('/stock/{id}/edit', [StockTransactionController::class, 'edit'])->name('stock.edit');
+    Route::put('/stock/{id}', [StockTransactionController::class, 'update'])->name('stock.update');
+    Route::delete('/stock/{id}', [StockTransactionController::class, 'destroy'])->name('stock.destroy');
 
     // --- Product Management (Full CRUD) ---
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -77,6 +80,7 @@ Route::middleware('auth')->group(function () {
 
     // --- Category Management (Settings) ---
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
@@ -90,7 +94,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/positions/{position}', [PositionController::class, 'destroy'])->name('positions.destroy');
 
     // --- Reports & Data Cleanup ---
-    Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
-    Route::delete('/reports/sales/{id}', [ReportController::class, 'destroy'])->name('sales.destroy'); // Delete Sale Record
+    Route::get('/reports/sale', [ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/invoice/{id}', [ReportController::class, 'invoice'])->name('reports.invoice');
+    Route::delete('/reports/sales/{id}', [ReportController::class, 'destroy'])->name('sales.destroy');
     Route::get('/reports/stock', [ReportController::class, 'stock'])->name('reports.stock');
 });

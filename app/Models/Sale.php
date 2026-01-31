@@ -9,8 +9,18 @@ class Sale extends Model
 {
     use HasFactory;
 
-    protected $guarded = []; // Allow all fields
+    protected $fillable = [
+        'user_id',
+        'customer_id',
+        'invoice_number',
+        'total_amount',
+        'discount',
+        'tax',
+        'final_total',
+        'payment_method'
+    ];
 
+    // Relationships
     public function details()
     {
         return $this->hasMany(SaleDetail::class);
@@ -19,5 +29,10 @@ class Sale extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

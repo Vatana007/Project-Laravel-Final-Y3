@@ -1,22 +1,38 @@
 @extends('layout.app')
 
-@section('title', 'New Adjustment')
+@section('title', 'Edit Adjustment')
 
 @section('content')
 
     <div style="max-width: 600px; margin: 0 auto; padding-top: 2rem;">
 
         <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Adjust Inventory</h1>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Manually correct stock levels for damages, returns, or
-                new shipments.</p>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Edit Adjustment</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Editing for product: <strong>{{ $transaction->product->name }}</strong>
+            </p>
         </div>
 
         <div class="card animate-fade"
             style="padding: 2.5rem; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);">
 
-            <form action="{{ route('stock.store') }}" method="POST">
+            <form action="{{ route('stock.update', $transaction->id) }}" method="POST">
                 @csrf
+                @method('PUT')
+
+                <div
+                    style="background: #fff7ed; border: 1px solid #ffedd5; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; gap: 10px; align-items: start;">
+                    <svg style="color: #c2410c; min-width: 20px;" width="20" height="20" fill="none" stroke="currentColor"
+                        stroke-width="2" viewBox="0 0 24 24">
+                        <path
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                        </path>
+                    </svg>
+                    <p style="color: #9a3412; font-size: 0.85rem; margin: 0; line-height: 1.4;">
+                        <strong>Caution:</strong> Changing this will automatically reverse the previous stock change and
+                        apply the new one.
+                    </p>
+                </div>
 
                 <div class="form-group" style="margin-bottom: 2rem;">
                     <label
@@ -26,8 +42,9 @@
                     <div
                         style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: #f1f5f9; padding: 5px; border-radius: 12px;">
                         <label class="type-option">
-                            <input type="radio" name="type" value="in" checked onchange="toggleTheme('in')">
-                            <div class="option-box">
+                            <input type="radio" name="type" value="in" {{ $transaction->type == 'in' ? 'checked' : '' }}
+                                onchange="toggleTheme('in')">
+                            <div class="option-box" id="box-in">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
                                     viewBox="0 0 24 24">
                                     <path d="M12 4v16m8-8H4"></path>
@@ -37,8 +54,9 @@
                         </label>
 
                         <label class="type-option">
-                            <input type="radio" name="type" value="out" onchange="toggleTheme('out')">
-                            <div class="option-box">
+                            <input type="radio" name="type" value="out" {{ $transaction->type == 'out' ? 'checked' : '' }}
+                                onchange="toggleTheme('out')">
+                            <div class="option-box" id="box-out">
                                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
                                     viewBox="0 0 24 24">
                                     <path d="M20 12H4"></path>
@@ -46,26 +64,6 @@
                                 <span>Remove Stock</span>
                             </div>
                         </label>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label
-                        style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Select
-                        Product</label>
-                    <div style="position: relative;">
-                        <svg style="position: absolute; left: 14px; top: 12px; color: #94a3b8;" width="20" height="20"
-                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        <select name="product_id" class="modern-input" required>
-                            <option value="">Choose item...</option>
-                            @foreach($products as $product)
-                                <option value="{{ $product->id }}">
-                                    {{ $product->name }} (Current: {{ $product->qty }})
-                                </option>
-                            @endforeach
-                        </select>
                     </div>
                 </div>
 
@@ -80,8 +78,7 @@
                         <label
                             style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Reason
                             / Note</label>
-                        <input type="text" name="note" id="noteField" class="modern-input"
-                            placeholder="e.g. New Shipment arrived">
+                        <input type="text" name="note" id="noteField" class="modern-input" value="{{ $transaction->note }}">
                     </div>
                 </div>
 
@@ -89,8 +86,8 @@
                     <a href="{{ route('stock.index') }}" class="btn"
                         style="flex: 1; background: white; border: 1px solid var(--border); color: var(--text-main); justify-content: center; font-weight: 600;">Cancel</a>
                     <button type="submit" id="submitBtn" class="btn btn-primary"
-                        style="flex: 2; justify-content: center; font-weight: 600; padding: 0.8rem; background: var(--success); border-color: var(--success);">Confirm
-                        Addition</button>
+                        style="flex: 2; justify-content: center; font-weight: 600; padding: 0.8rem;">Update
+                        Adjustment</button>
                 </div>
 
             </form>
@@ -98,7 +95,7 @@
     </div>
 
     <style>
-        /* Modern Inputs */
+        /* Reuse Modern Input Styles */
         .modern-input {
             width: 100%;
             padding: 0.8rem 1rem 0.8rem 2.8rem;
@@ -116,7 +113,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        /* Toggle Switch Styling */
         .type-option input {
             display: none;
         }
@@ -136,49 +132,31 @@
             color: var(--text-muted);
             transition: 0.2s;
         }
-
-        /* Active States */
-        .type-option input:checked+.option-box {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Specific Color Logic handled by JS below */
     </style>
 
     <script>
         function toggleTheme(type) {
             const btn = document.getElementById('submitBtn');
-            const note = document.getElementById('noteField');
-            const boxes = document.querySelectorAll('.option-box');
+            const boxIn = document.getElementById('box-in');
+            const boxOut = document.getElementById('box-out');
 
-            // Reset colors
-            boxes[0].style.color = 'var(--text-muted)';
-            boxes[1].style.color = 'var(--text-muted)';
+            // Reset
+            boxIn.style.color = 'var(--text-muted)'; boxIn.style.background = 'transparent'; boxIn.style.boxShadow = 'none';
+            boxOut.style.color = 'var(--text-muted)'; boxOut.style.background = 'transparent'; boxOut.style.boxShadow = 'none';
 
             if (type === 'in') {
-                btn.style.background = '#10b981'; // Green
-                btn.style.borderColor = '#10b981';
-                btn.innerText = 'Confirm Addition';
-                note.placeholder = 'e.g. New Shipment arrived';
-
-                // Highlight Box 1
-                boxes[0].style.color = '#10b981';
-                boxes[0].style.background = 'white';
+                btn.style.background = '#10b981'; btn.style.borderColor = '#10b981';
+                boxIn.style.color = '#10b981'; boxIn.style.background = 'white'; boxIn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
             } else {
-                btn.style.background = '#ef4444'; // Red
-                btn.style.borderColor = '#ef4444';
-                btn.innerText = 'Confirm Removal';
-                note.placeholder = 'e.g. Broken, Expired, Theft';
-
-                // Highlight Box 2
-                boxes[1].style.color = '#ef4444';
-                boxes[1].style.background = 'white';
+                btn.style.background = '#ef4444'; btn.style.borderColor = '#ef4444';
+                boxOut.style.color = '#ef4444'; boxOut.style.background = 'white'; boxOut.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
             }
         }
 
-        // Initialize
-        toggleTheme('in');
+        // Run on load based on current value
+        window.addEventListener('DOMContentLoaded', () => {
+            toggleTheme("{{ $transaction->type }}");
+        });
     </script>
 
 @endsection

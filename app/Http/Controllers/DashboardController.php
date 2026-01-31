@@ -2,28 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sale;
 use App\Models\Product;
-use App\Models\Employee;
+use App\Models\Sale;
+use App\Models\Customer;
+use App\Models\StockTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Calculate totals for the dashboard cards
-        $totalSales = Sale::sum('final_total');
-        $todaySales = Sale::whereDate('created_at', today())->sum('final_total');
-        $lowStockProducts = Product::where('qty', '<', 5)->count();
-        $totalEmployees = Employee::count();
+        // 1. Key Metrics
+        $todayRevenue = Sale::whereDate('created_at', Carbon::today())->sum('final_total');
+        $totalOrders = Sale::count();
+        $lowStockItems = Product::where('qty', '<=', 5)->count();
+        $totalCustomers = Customer::count();
 
-        // Simple data for a chart (last 7 days sales)
-        $salesData = Sale::selectRaw('DATE(created_at) as date, SUM(final_total) as total')
-            ->groupBy('date')
-            ->orderBy('date', 'desc')
-            ->limit(7)
-            ->get();
+        // 2. Recent Sales (Last 5)
+        $recentSales = Sale::with('user')->latest()->take(5)->get();
 
-        return view('dashboard', compact('totalSales', 'todaySales', 'lowStockProducts', 'totalEmployees', 'salesData'));
+        // 3. Recent Stock Activity (Last 5)
+        $recentStock = StockTransaction::with('product')->latest()->take(5)->get();
+
+        return view('dashboard', compact(
+            'todayRevenue', 
+            'totalOrders', 
+            'lowStockItems', 
+            'totalCustomers', 
+            'recentSales',
+            'recentStock'
+        ));
     }
 }

@@ -1,199 +1,145 @@
 @extends('layout.app')
 
+@section('title', 'Overview')
+
 @section('content')
-    <div class="header animate-fade">
-        <div>
-            <h1 class="page-title">Dashboard Overview</h1>
-            <p style="color: var(--text-muted); margin-top: 4px;">
-                Good afternoon, <strong>{{ auth()->user()->name }}</strong>. Here is what's happening today.
-            </p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    
+    <div class="card" style="border-left: 4px solid var(--primary); padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="width: 50px; height: 50px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </div>
-        <div style="display: flex; gap: 1rem;">
-            <a href="{{ route('pos.index') }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-size: 1rem;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    style="margin-right: 8px;">
-                    <path d="M12 4v16m8-8H4"></path>
-                </svg>
-                New Sale (POS)
+        <div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Today's Revenue</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${{ number_format($todayRevenue, 2) }}</div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--success); padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="width: 50px; height: 50px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--success);">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        </div>
+        <div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Total Orders</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($totalOrders) }}</div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #6366f1; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="width: 50px; height: 50px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6366f1;">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        </div>
+        <div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Total Members</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($totalCustomers) }}</div>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--danger); padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+        <div style="width: 50px; height: 50px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--danger);">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Low Stock Items</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ $lowStockItems }}</div>
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+    
+    <div class="card animate-fade">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Recent Sales</h3>
+            <a href="{{ route('reports.sales') }}" class="btn" style="background: #f1f5f9; color: var(--text-muted); font-size: 0.8rem;">View All</a>
+        </div>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="padding-left: 1rem;">Receipt #</th>
+                    <th>Date</th>
+                    <th>Cashier</th>
+                    <th style="text-align: right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($recentSales as $sale)
+                <tr>
+                    <td style="padding-left: 1rem; font-family: monospace; font-weight: 600;">#{{ 1000 + $sale->id }}</td>
+                    <td style="color: var(--text-muted);">{{ $sale->created_at->format('M d, H:i') }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 24px; height: 24px; background: #e0e7ff; color: var(--primary); border-radius: 50%; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                {{ substr($sale->user->name ?? 'A', 0, 1) }}
+                            </div>
+                            <span>{{ $sale->user->name ?? 'Admin' }}</span>
+                        </div>
+                    </td>
+                    <td style="text-align: right; font-weight: 700; color: var(--success);">${{ number_format($sale->final_total, 2) }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">No sales recorded yet.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card animate-fade">
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">Recent Activity</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            @forelse($recentStock as $stock)
+            <div style="display: flex; gap: 12px; padding-bottom: 1rem; border-bottom: 1px dashed var(--border);">
+                <div style="margin-top: 2px;">
+                    @if($stock->type == 'in')
+                        <div style="width: 32px; height: 32px; background: #dcfce7; color: #166534; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+                        </div>
+                    @elseif($stock->type == 'out' || $stock->type == 'broken')
+                        <div style="width: 32px; height: 32px; background: #fee2e2; color: #b91c1c; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 12H4"></path></svg>
+                        </div>
+                    @else
+                        <div style="width: 32px; height: 32px; background: #f1f5f9; color: var(--text-muted); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                    @endif
+                </div>
+                
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.9rem;">
+                        {{ ucfirst($stock->type) }} Adjustment
+                    </div>
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0;">
+                        {{ $stock->product->name ?? 'Unknown Item' }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-main);">
+                        @if($stock->type == 'in')
+                            <span style="color: var(--success); font-weight: 700;">+{{ $stock->qty }}</span> added
+                        @else
+                            <span style="color: var(--danger); font-weight: 700;">-{{ $stock->qty }}</span> removed
+                        @endif
+                    </div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right;">
+                    {{ $stock->created_at->diffForHumans() }}
+                </div>
+            </div>
+            @empty
+            <div style="text-align: center; color: var(--text-muted); padding: 1rem;">No activity found.</div>
+            @endforelse
+        </div>
+        
+        <div style="margin-top: 1.5rem;">
+            <a href="{{ route('stock.create') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                Adjust Stock
             </a>
         </div>
     </div>
+</div>
 
-    <div class="animate-fade"
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
-
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <span class="stat-label">Total Revenue</span>
-                    <div class="stat-value" style="color: var(--primary);">${{ number_format($totalSales, 2) }}</div>
-                </div>
-                <div style="background: #e0e7ff; color: var(--primary); padding: 10px; border-radius: 10px;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path>
-                    </svg>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; display: flex; align-items: center; font-size: 0.85rem; color: var(--success);">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                    style="margin-right: 4px;">
-                    <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-                <span>+12.5% from last month</span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <span class="stat-label">Today's Sales</span>
-                    <div class="stat-value">${{ number_format($todaySales, 2) }}</div>
-                </div>
-                <div style="background: #d1fae5; color: #059669; padding: 10px; border-radius: 10px;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-                Updated just now
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <span class="stat-label">Low Stock Items</span>
-                    <div class="stat-value" style="color: var(--danger);">{{ $lowStockProducts }}</div>
-                </div>
-                <div style="background: #fee2e2; color: var(--danger); padding: 10px; border-radius: 10px;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path
-                            d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01">
-                        </path>
-                    </svg>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--danger);">
-                Requires attention
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: start;">
-                <div>
-                    <span class="stat-label">Total Staff</span>
-                    <div class="stat-value">{{ $totalEmployees }}</div>
-                </div>
-                <div style="background: #f1f5f9; color: var(--secondary); padding: 10px; border-radius: 10px;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path>
-                    </svg>
-                </div>
-            </div>
-            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-                Active members
-            </div>
-        </div>
-    </div>
-
-    <div class="animate-fade" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; animation-delay: 0.1s;">
-
-        <div class="card" style="min-height: 400px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.2rem; font-weight: 700;">Recent Sales Performance</h3>
-                <select class="form-control"
-                    style="width: auto; padding: 0.4rem 2rem 0.4rem 0.8rem; margin: 0; font-size: 0.85rem;">
-                    <option>Last 7 Days</option>
-                    <option>This Month</option>
-                </select>
-            </div>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th style="padding-left: 0;">Date</th>
-                        <th>Revenue</th>
-                        <th>Trend</th>
-                        <th style="text-align: right;">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($salesData as $data)
-                        <tr>
-                            <td style="padding-left: 0; font-weight: 500;">
-                                {{ \Carbon\Carbon::parse($data->date)->format('M d, Y') }}
-                            </td>
-                            <td>${{ number_format($data->total, 2) }}</td>
-                            <td>
-                                <div
-                                    style="width: 100px; height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden;">
-                                    <div style="width: {{ rand(40, 90) }}%; height: 100%; background: var(--primary);"></div>
-                                </div>
-                            </td>
-                            <td style="text-align: right;">
-                                <span
-                                    style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
-                                    Completed
-                                </span>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-
-            <div class="card"
-                style="background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); color: white; border: none;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: white;">Quick Actions</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <a href="{{ route('products.create') }}"
-                        style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center; color: white; transition: 0.2s;">
-                        <div style="font-size: 1.5rem; margin-bottom: 5px;">📦</div>
-                        <div style="font-size: 0.8rem; font-weight: 600;">Add Product</div>
-                    </a>
-                    <a href="{{ route('customers.index') }}"
-                        style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center; color: white; transition: 0.2s;">
-                        <div style="font-size: 1.5rem; margin-bottom: 5px;">👥</div>
-                        <div style="font-size: 0.8rem; font-weight: 600;">Add Member</div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1.25rem;">System Activity</h3>
-
-                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div
-                        style="background: #e0e7ff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold; flex-shrink: 0;">
-                        S
-                    </div>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 500;">System Update</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Database backup completed successfully.
-                        </div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">2 hours ago</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <div
-                        style="background: #fee2e2; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--danger); font-weight: bold; flex-shrink: 0;">
-                        !
-                    </div>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 500;">Stock Alert</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">Coca Cola inventory is running low
-                            ({{ $lowStockProducts }} items).</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">5 hours ago</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
 @endsection
