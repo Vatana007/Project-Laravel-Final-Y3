@@ -40,7 +40,7 @@ class EmployeeController extends Controller
             'start_date' => $request->start_date,
         ]);
 
-        return redirect()->route('employees.index')->with('success', 'Employee saved to database!');
+        return redirect()->route('employees.index')->with('success', 'Employee saved!');
     }
 
     public function edit($id)

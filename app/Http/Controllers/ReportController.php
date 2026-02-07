@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 class ReportController extends Controller
 {
     // 1. Show Sales Report
@@ -53,7 +53,26 @@ class ReportController extends Controller
 
         return back()->with('success', 'Sale record deleted.');
     }
-    
+
+    public function printSales(Request $request)
+    {
+        $startDate = $request->start_date ?? date('Y-m-d');
+        $endDate = $request->end_date ?? date('Y-m-d');
+
+        // Fetch same data as the report
+        $sales = Sale::with('user', 'customer')
+            ->whereBetween('created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay()
+            ])->get();
+
+        $totalRevenue = $sales->sum('final_total');
+        $totalTransactions = $sales->count();
+
+        // Return a simple print view
+        return view('reports.print_sales', compact('sales', 'startDate', 'endDate', 'totalRevenue', 'totalTransactions'));
+    }
+
     // 4. Stock Report (Keep existing)
     public function stock()
     {

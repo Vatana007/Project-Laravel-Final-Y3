@@ -14,10 +14,21 @@
             </div>
 
             <form action="{{ route('reports.sales') }}" method="GET" class="filter-group">
-                <input type="date" name="start_date" class="date-input" value="{{ request('start_date') }}">
+                <input type="date" name="start_date" class="date-input" value="{{ request('start_date', date('Y-m-d')) }}">
                 <span style="color: #94a3b8; font-size: 0.9rem;">to</span>
-                <input type="date" name="end_date" class="date-input" value="{{ request('end_date') }}">
-                <button class="btn-filter">Filter</button>
+                <input type="date" name="end_date" class="date-input" value="{{ request('end_date', date('Y-m-d')) }}">
+
+                <button type="submit" class="btn-filter">Filter</button>
+
+                <button type="submit" formaction="{{ route('reports.sales.print') }}" formtarget="_blank" class="btn-print">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        style="margin-right: 6px;">
+                        <path
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                        </path>
+                    </svg>
+                    Print
+                </button>
             </form>
         </div>
 
@@ -158,7 +169,7 @@
             align-items: center;
             gap: 8px;
             background: white;
-            padding: 4px 8px;
+            padding: 8px 8px;
             border: 1px solid var(--border);
             border-radius: 8px;
             box-shadow: var(--shadow-sm);
@@ -188,6 +199,25 @@
             background: var(--primary);
         }
 
+        /* NEW: Print Button Style */
+        .btn-print {
+            background: #e0e7ff;
+            color: var(--primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-print:hover {
+            background: #c7d2fe;
+        }
+
         /* Stats Cards */
         .stats-grid {
             display: grid;
@@ -205,6 +235,7 @@
             align-items: center;
             gap: 1rem;
             box-shadow: var(--shadow-sm);
+            text-align: center;
         }
 
         .stat-card.primary .stat-icon {

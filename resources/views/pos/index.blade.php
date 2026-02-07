@@ -32,7 +32,12 @@
                         data-category="{{ $product->category_id }}">
 
                         <div class="card-image">
-                            <span class="product-initial">{{ substr($product->name, 0, 1) }}</span>
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <span class="product-initial">{{ substr($product->name, 0, 1) }}</span>
+                            @endif
                         </div>
 
                         <div class="card-details">
@@ -95,8 +100,7 @@
                                     <a href="{{ route('pos.update', ['id' => $id, 'action' => 'increase']) }}" class="qty-btn">+</a>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 12px;">
-                                    <span
-                                        class="item-total">${{ number_format($details['price'] * $details['qty'], 2) }}</span>
+                                    <span class="item-total">${{ number_format($details['price'] * $details['qty'], 2) }}</span>
                                     <a href="{{ route('pos.update', ['id' => $id, 'action' => 'remove']) }}"
                                         class="remove-btn">&times;</a>
                                 </div>
@@ -282,9 +286,13 @@
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            /* Stack Header -> Items -> Footer */
             box-shadow: -4px 0 20px rgba(0, 0, 0, 0.03);
             height: 100%;
+            /* Force it to fill the container */
             border-radius: 12px 12px 0 0;
+            overflow: hidden;
+            /* Important: Keeps children inside */
         }
 
         /* Header & Filters */
@@ -487,6 +495,24 @@
             flex: 1;
             overflow-y: auto;
             padding: 1rem;
+            min-height: 0;
+        }
+
+        .cart-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cart-items::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         .cart-item {

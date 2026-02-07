@@ -236,7 +236,7 @@
                 <label>Email Address</label>
                 <div class="input-wrapper">
                     <input type="email" name="email" class="form-control" placeholder="admin@nexus.com" required
-                        autofocus value="admin@example.com">
+                        autofocus value="admin@gmail.com">
                 </div>
             </div>
 
@@ -244,7 +244,7 @@
                 <label>Password</label>
                 <div class="input-wrapper">
                     <input type="password" name="password" class="form-control" placeholder="••••••••" required
-                        value="password">
+                        value="12345678">
                 </div>
             </div>
 

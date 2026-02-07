@@ -13,23 +13,28 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Key Metrics
-        $todayRevenue = Sale::whereDate('created_at', Carbon::today())->sum('final_total');
+        // 1. Revenue: Changed to sum() ALL time so you can see your data (removed whereDate)
+        $todayRevenue = Sale::sum('final_total');
+
+        // 2. Orders: Count all sales
         $totalOrders = Sale::count();
+
+        // 3. Low Stock: Count items with less than 5 qty
         $lowStockItems = Product::where('qty', '<=', 5)->count();
-        $totalCustomers = Customer::count();
 
-        // 2. Recent Sales (Last 5)
+        // 4. Members: Count customers (Renamed variable to match your Label)
+        $totalMembers = Customer::count();
+
+        // 5. Recent Data
         $recentSales = Sale::with('user')->latest()->take(5)->get();
-
-        // 3. Recent Stock Activity (Last 5)
         $recentStock = StockTransaction::with('product')->latest()->take(5)->get();
 
+        // Pass the correct variables to the view
         return view('dashboard', compact(
-            'todayRevenue', 
-            'totalOrders', 
-            'lowStockItems', 
-            'totalCustomers', 
+            'todayRevenue',
+            'totalOrders',
+            'lowStockItems',
+            'totalMembers', // <--- Now matches "$totalMembers"
             'recentSales',
             'recentStock'
         ));

@@ -54,6 +54,24 @@
                     </div>
 
                     <div class="form-group" style="margin-top: 1.5rem;">
+                        <label>Supplier</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
+                            <select name="supplier_id" class="modern-input">
+                                <option value="">Select Supplier...</option>
+                                @foreach($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
                         <label>Barcode / SKU (Optional)</label>
                         <div class="input-wrapper">
                             <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor"
@@ -61,6 +79,19 @@
                                 <path d="M3 4h18M3 20h18M5 8h2m4 0h2m4 0h2M5 16h2m4 0h2m4 0h2M5 12h14"></path>
                             </svg>
                             <input type="text" name="barcode" class="modern-input" placeholder="Scan or type code...">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label>Product Image</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <input type="file" name="image" class="modern-input" accept="image/*">
                         </div>
                     </div>
                 </div>

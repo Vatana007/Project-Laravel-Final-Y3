@@ -32,7 +32,7 @@
         </div>
         <div>
             <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Total Members</div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($totalCustomers) }}</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($totalMembers) }}</div>
         </div>
     </div>
 

@@ -26,16 +26,43 @@
                     <div class="grid-2">
                         <div class="form-group">
                             <label>Product Name</label>
-                            <input type="text" name="name" class="modern-input" value="{{ $product->name }}" required>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                <input type="text" name="name" class="modern-input" value="{{ $product->name }}" required>
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label>Category</label>
-                            <select name="category_id" class="modern-input">
-                                <option value="">Select Category...</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
+                            <div class="input-wrapper">
+                                <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M4 6h16M4 12h16M4 18h7"></path>
+                                </svg>
+                                <select name="category_id" class="modern-input">
+                                    <option value="">Select Category...</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label>Supplier</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <select name="supplier_id" class="modern-input">
+                                <option value="">Select Supplier...</option>
+                                @foreach($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}" {{ $product->supplier_id == $supplier->id ? 'selected' : '' }}>
+                                        {{ $supplier->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -44,7 +71,34 @@
 
                     <div class="form-group" style="margin-top: 1.5rem;">
                         <label>Barcode / SKU</label>
-                        <input type="text" name="barcode" class="modern-input" value="{{ $product->barcode }}">
+                        <div class="input-wrapper">
+                             <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M3 4h18M3 20h18M5 8h2m4 0h2m4 0h2M5 16h2m4 0h2m4 0h2M5 12h14"></path>
+                            </svg>
+                            <input type="text" name="barcode" class="modern-input" value="{{ $product->barcode }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label>Product Image</label>
+                        
+                        @if($product->image)
+                            <div style="margin-bottom: 10px;">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="Current Image" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                            </div>
+                        @endif
+
+                        <div class="input-wrapper">
+                            <svg class="input-icon" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" viewBox="0 0 24 24">
+                                <path
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <input type="file" name="image" class="modern-input" accept="image/*">
+                        </div>
+                        <small style="color: #64748b;">Leave empty to keep current image.</small>
                     </div>
                 </div>
 
@@ -87,7 +141,11 @@
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
         @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
         .form-group label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.03em; }
-        .modern-input { width: 100%; padding: 0.8rem 1rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; color: var(--text-main); transition: all 0.2s ease; }
+        
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 14px; top: 12px; color: #94a3b8; }
+        
+        .modern-input { width: 100%; padding: 0.8rem 1rem; padding-left: 2.8rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; color: var(--text-main); transition: all 0.2s ease; }
         .modern-input:focus { background-color: white; border-color: var(--primary); outline: none; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1); }
     </style>
 

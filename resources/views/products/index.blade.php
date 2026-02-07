@@ -34,6 +34,7 @@
                         style="background: #f8fafc; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; color: var(--text-muted);">
                         <th style="padding: 1rem; border-top-left-radius: 8px;">Product Name</th>
                         <th>Category</th>
+                        <th>Supplier</th>
                         <th style="text-align: right;">Price</th>
                         <th style="text-align: center;">Stock Status</th>
                         <th style="padding: 1rem; text-align: right; border-top-right-radius: 8px;">Actions</th>
@@ -45,20 +46,41 @@
 
                             <td style="padding: 1rem;">
                                 <div style="display: flex; align-items: center; gap: 1rem;">
+
                                     <div
-                                        style="width: 40px; height: 40px; background: #eff6ff; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                                        {{ substr($product->name, 0, 1) }}
+                                        style="width: 40px; height: 40px; background: #eff6ff; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; overflow: hidden;">
+                                        @if($product->image)
+                                            <img src="{{ asset('storage/' . $product->image) }}" alt="img"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                        @else
+                                            {{ substr($product->name, 0, 1) }}
+                                        @endif
                                     </div>
+
                                     <div>
                                         <div style="font-weight: 600; color: var(--text-main);">{{ $product->name }}</div>
                                         <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">
-                                            {{ $product->barcode ?? 'No Barcode' }}</div>
+                                            {{ $product->barcode ?? 'No Barcode' }}
+                                        </div>
                                     </div>
                                 </div>
                             </td>
 
                             <td style="color: var(--text-muted); font-size: 0.9rem;">
-                                {{ $product->category->name ?? 'Uncategorized' }}
+                                <span
+                                    style="background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.8rem;">
+                                    {{ $product->category->name ?? 'Uncategorized' }}
+                                </span>
+                            </td>
+
+                            <td style="color: var(--text-muted); font-size: 0.9rem;">
+                                @if($product->supplier)
+                                    <span style="color: var(--primary); font-weight: 500;">
+                                        {{ $product->supplier->name }}
+                                    </span>
+                                @else
+                                    <span style="color: #cbd5e1;">-</span>
+                                @endif
                             </td>
 
                             <td style="text-align: right; font-weight: 600; color: var(--text-main);">
@@ -107,7 +129,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
                                 <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1"
                                     viewBox="0 0 24 24" style="margin-bottom: 1rem; color: #cbd5e1;">
                                     <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>

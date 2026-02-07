@@ -49,15 +49,33 @@ class PosController extends Controller
         return redirect()->back();
     }
 
-    public function updateCart(Request $request)
+    public function updateCart($id, $action)
     {
-        if ($request->id && $request->qty) {
-            $cart = session()->get('cart');
-            if (isset($cart[$request->id])) {
-                $cart[$request->id]["qty"] = $request->qty;
-                session()->put('cart', $cart);
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            switch ($action) {
+                case 'increase':
+                    $cart[$id]['qty']++;
+                    break;
+
+                case 'decrease':
+                    if ($cart[$id]['qty'] > 1) {
+                        $cart[$id]['qty']--;
+                    } else {
+                        unset($cart[$id]); // Remove if 0
+                    }
+                    break;
+
+                case 'remove':
+                    unset($cart[$id]);
+                    break;
             }
+
+            session()->put('cart', $cart);
         }
+
+        return redirect()->back();
     }
 
     public function removeLink(Request $request)

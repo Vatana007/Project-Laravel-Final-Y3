@@ -19,6 +19,29 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
+        User::create([
+            'name' => 'Admin Vatana',
+            'email' => 'admin@pos.com',
+            'password' => Hash::make('123'), // Password is "password"
+            'role' => 'admin',
+        ]);
+
+        // 2. Staff Account (POS, Inventory, Members)
+        User::create([
+            'name' => 'Staff Rith',
+            'email' => 'staff@pos.com',
+            'password' => Hash::make('123'),
+            'role' => 'staff',
+        ]);
+
+        // 3. User Account (POS Only)
+        User::create([
+            'name' => 'User Chhiet',
+            'email' => 'user@pos.com',
+            'password' => Hash::make('123'),
+            'role' => 'user',
+        ]);
+
         // 2. Create Default Categories
         $drink = Category::create(['name' => 'Drinks']);
         $food = Category::create(['name' => 'Food']);
@@ -32,7 +55,7 @@ class DatabaseSeeder extends Seeder
             'sale_price' => 1.00,
             'qty' => 100
         ]);
-        
+
         Product::create([
             'category_id' => $food->id,
             'name' => 'Sandwich',
